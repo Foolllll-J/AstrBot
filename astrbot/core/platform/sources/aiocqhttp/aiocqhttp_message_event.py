@@ -31,6 +31,16 @@ class AiocqhttpMessageEvent(AstrMessageEvent):
         super().__init__(message_str, message_obj, platform_meta, session_id)
         self.bot = bot
 
+    def _get_typing_user_id(self) -> int | str | None:
+        if not self.is_private_chat():
+            return None
+
+        user_id = self.get_sender_id()
+        if not user_id:
+            return None
+
+        return int(user_id) if user_id.isdigit() else user_id
+
     @staticmethod
     async def _from_segment_to_dict(segment: BaseMessageComponent) -> dict:
         """修复部分字段"""
@@ -180,6 +190,23 @@ class AiocqhttpMessageEvent(AstrMessageEvent):
             session_id=session_id,
         )
         await super().send(message)
+
+    async def send_typing(self) -> None:
+        user_id = self._get_typing_user_id()
+        if user_id is None:
+            return
+
+        try:
+            await self.bot.call_action(
+                "set_input_status",
+                user_id=user_id,
+                event_type=1,
+            )
+        except Exception:
+            return
+
+    async def stop_typing(self) -> None:
+        return
 
     async def send_streaming(
         self,
