@@ -44,8 +44,8 @@ from astrbot.core.skills.skill_manager import (
     build_skills_prompt,
 )
 from astrbot.core.star.context import Context
-from astrbot.core.star.star import star_registry
 from astrbot.core.star.session_plugin_manager import SessionPluginManager
+from astrbot.core.star.star import star_registry
 from astrbot.core.star.star_handler import star_map
 from astrbot.core.tools.computer_tools import (
     AnnotateExecutionTool,
